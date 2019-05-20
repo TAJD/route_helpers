@@ -1,4 +1,2 @@
-from markdown import markdown
+from .domain import return_co_ords
 
-def joke():
-    return (u'Wenn ist das Nunst\u00fcck git un Slotermeyer?')

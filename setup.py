@@ -13,7 +13,13 @@ setup(name='routing_helper',
       author_email='thomas.dickson@soton.ac.uk',
       license='MIT',
       packages=['routing_helper'],
+        
       install_requires=['xarray',
                         'xesmf',
-                        'shapely'],
+                        'shapely',
+                        'matplotlib',
+                        'pyproj'
+                        ],
+      test_suite='nose.collector',
+      tests_require=['nose'],
       zip_safe=False)
