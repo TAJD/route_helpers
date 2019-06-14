@@ -1,5 +1,7 @@
 """
-Generate performance
+Performance
+
+Functions assisting with the generation of synthetic performance values.
 
 Thomas Dickson
 12/03/2019

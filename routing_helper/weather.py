@@ -146,7 +146,7 @@ def test_load_ensemble_scenario():
     1. Load weather data
     2. Select variable
     3. Select ensemble
-    4. Return ensemble data
+    4. turn ensemble data
     5. Convert u10 and v10 to wind speed and wind direction.
     """
     path = "/scratch/td7g11/era5/polynesia_2005_01.nc"
