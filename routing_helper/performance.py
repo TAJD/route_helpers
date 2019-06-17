@@ -40,6 +40,16 @@ def generate_performance(lower_twa, x_tws, ratio):
         performance[:, i] = rbf(xi)
     return x_tws, xi, performance
 
-if __name__ == "__main__":
-    generate_performance(120.0, np.array([0.0, 5.0, 10.0, 20.0, 21.0]), 0.3)
 
+def generate_circular_performance(lower_twa, x_tws, ratio, path=None):
+    x_twa = np.linspace(lower_twa, 180.0)
+    y_bsp = np.zeros(shape=(x_twa.shape[0], x_tws.shape[0]))
+    for i in range(x_tws.shape[0]-2):
+        y_bsp[1:, i+1] = x_tws[i+1]*ratio
+    performance = np.empty(shape=(x_twa.shape[0], x_tws.shape[0]))
+    plt.figure(figsize=(6,6))
+    ax = plt.subplot(111, projection='polar')
+    ax.set_theta_zero_location("N")
+    for i in range(len(x_tws)):
+        performance[:, i] = y_bsp[:, i]
+    return x_tws, x_twa, performance
