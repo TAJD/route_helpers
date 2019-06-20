@@ -37,7 +37,12 @@ def load_dataset_ensemble(path_nc, var, ens):
         ds.coords['lon'] = ('longitude', ds['longitude'].values)
         ds.swap_dims({'longitude': 'lon', 'latitude': 'lat'})
         ds = ds.isel(number=ens)
-        return ds[var]
+        da = ds[var]
+        da = da.dropna("latitude", how="all")
+        da = da.dropna("longitude", how="all")
+        da = da.dropna("time", how="all")
+        return da
+       # return ds[var].dropna("time")
 
 
 def return_time_index(ds):
@@ -60,12 +65,11 @@ def regrid_data(ds, longs, lats):
 
 def return_data(ds):
     """Return the values, longs, lats and timestamps of dataset."""
-    ds = ds.bfill('longitude', limit=None)
-    values = ds.values
+    #ds = ds.bfill('longitude', limit=None)
     lons = ds['lon'].values
     lats = ds['lat'].values
     time_vals = ds['time'].values
-    return values, lons, lats
+    return ds.data, lons, lats
 
 
 def load_cluster(path_nc, longs, lats, var):
@@ -127,16 +131,25 @@ def process_era5_weather(path_nc, longs, lats):
 
 
 def retrieve_era5_ensemble(path_nc, ens=0):
-    """Retrieve the weather data for a specific ensemble within an ERA5 dataset."""
+    """Retrieve the weather data for a specific ensemble within an ERA5 dataset.
+    Retrieve each element of the weather from the weather scenario.
+    Make sure each dataset has the same time signature.
+    http://colaweb.gmu.edu/dev/clim301/lectures/wind/wind-uv"""
     ds_u10 = load_dataset_ensemble(path_nc, 'u10', ens)
     ds_v10 = load_dataset_ensemble(path_nc, 'v10', ens)
-    # print(np.count_nonzero(~np.isnan(ds_u10.data)))
-    wisp = 1.943844 * (ds_u10**2 + ds_v10**2)**0.5
-    # print(np.count_nonzero(~np.isnan(wisp.data))) # same number of nans before and after weather unit conversion
-    widi = np.rad2deg(np.arctan2(ds_u10, ds_v10)) + 180.0
+    wisp = (ds_u10**2 + ds_v10**2)**0.5
+    wisp.name="Wind speed (m/s)"
+    widi = np.rad2deg(np.arctan2(ds_u10, ds_v10))
+    widi.name="Wind direction (degrees)"
     wh = load_dataset_ensemble(path_nc, 'swh', ens)
     wd = load_dataset_ensemble(path_nc, 'mwd', ens)
     wp = load_dataset_ensemble(path_nc, 'mwp', ens)
+    
+   # print(np.count_nonzero(np.isnan(wisp.data)))
+    wisp = wisp.interpolate_na(dim="longitude")
+    wisp = wisp.interpolate_na(dim="time")
+    wisp = wisp.interp(time=wh.time)
+   # print(np.count_nonzero(np.isnan(wisp.data)))
     time = return_time_index(wh)
     return wisp, widi, wh, wd, wp, time
 
