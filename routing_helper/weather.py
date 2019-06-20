@@ -144,12 +144,12 @@ def retrieve_era5_ensemble(path_nc, ens=0):
     wh = load_dataset_ensemble(path_nc, 'swh', ens)
     wd = load_dataset_ensemble(path_nc, 'mwd', ens)
     wp = load_dataset_ensemble(path_nc, 'mwp', ens)
-    
-   # print(np.count_nonzero(np.isnan(wisp.data)))
     wisp = wisp.interpolate_na(dim="longitude")
     wisp = wisp.interpolate_na(dim="time")
     wisp = wisp.interp(time=wh.time)
-   # print(np.count_nonzero(np.isnan(wisp.data)))
+    wisp = wisp.ffill(dim="time")
+    widi = widi.interp(time=wh.time)
+    widi = widi.ffill(dim="time")
     time = return_time_index(wh)
     return wisp, widi, wh, wd, wp, time
 
