@@ -54,7 +54,7 @@ def generate_canoe_performance(lower_twa, x_tws, ratio, path=None):
     """Generate canoe performance polars - paddling speed """
     x_twa = np.linspace(0.0, 180.0)
     y_bsp = np.zeros(shape=(x_twa.shape[0], x_tws.shape[0]))
-    y _bsp[:, :] = 2.0
+    y_bsp[:, :] = 2.0
     for i in range(x_tws.shape[0]-1):
         for j in range(x_twa.shape[0]):
             if x_twa[j] > lower_twa:

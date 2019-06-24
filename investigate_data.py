@@ -1,4 +1,5 @@
 import routing_helper as rh
+import numpy as np
 
 def test_wisp():
     year = "2005"
@@ -29,4 +30,13 @@ def test_waves():
  #   print(lons)
 #    print(lats)
 
-test_waves()    
+#test_waves()    
+
+
+def check_performance():
+    x_tws = np.array([0.0, 5.0, 10.0])
+    x_tws, x_twa, y_bsp = rh.generate_canoe_performance(60.0, x_tws, 0.3)
+    print(y_bsp)
+
+
+check_performance()
